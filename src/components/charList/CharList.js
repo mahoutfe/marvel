@@ -1,5 +1,5 @@
-import { Component } from 'react';
 import PropTypes from 'prop-types';
+import { Component } from 'react';
 
 import MarvelService from '../../services/MarvelService';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -12,9 +12,10 @@ class CharList extends Component {
 		loading: true,
 		error: false,
 		newItemLoading: false,
-		offset: 1545,
+		offset: 210,
 		charEnded: false,
 		total: 0,
+		charId: null,
 	};
 
 	marvelService = new MarvelService();
@@ -62,8 +63,12 @@ class CharList extends Component {
 		});
 	};
 
-	// Этот метод создан для оптимизации,
-	// чтобы не помещать такую конструкцию в метод render
+	setCharId = (id) => {
+		this.setState({
+			charId: id,
+		});
+	};
+
 	renderItems(arr) {
 		const items = arr.map((item) => {
 			let imgStyle = { objectFit: 'cover' };
@@ -76,16 +81,30 @@ class CharList extends Component {
 
 			return (
 				<li
+					tabindex='0'
 					className='char__item'
 					key={item.id}
-					onClick={() => this.props.onCharSelected(item.id)}
+					style={{
+						boxShadow:
+							this.state.charId === item.id ? '0 5px 20px red' : 'none',
+						transform:
+							this.state.charId === item.id ? 'translateY(-8px)' : 'none',
+					}}
+					onClick={() => {
+						this.props.onCharSelected(item.id);
+						this.setCharId(item.id);
+					}}
+					onFocus={() => {
+						this.props.onCharSelected(item.id);
+						this.setCharId(item.id);
+					}}
 				>
 					<img src={item.thumbnail} alt={item.name} style={imgStyle} />
 					<div className='char__name'>{item.name}</div>
 				</li>
 			);
 		});
-		// А эта конструкция вынесена для центровки спиннера/ошибки
+
 		return <ul className='char__grid'>{items}</ul>;
 	}
 

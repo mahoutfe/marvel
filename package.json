@@ -2,10 +2,13 @@
 	"name": "marvel",
 	"version": "0.1.0",
 	"private": true,
+	"homepage": "https://mahoutfe.github.io/marvel",
 	"denppendencies": {
 		"@testing-library/react": "^11.2.7"
 	},
 	"scripts": {
+		"predeploy": "npm run build",
+		"deploy": "gh-pages -d build",
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
@@ -39,6 +42,7 @@
 		"web-vitals": "^4.0.0"
 	},
 	"dependencies": {
+		"gh-pages": "^6.1.1",
 		"prop-types": "^15.8.1"
 	}
 }

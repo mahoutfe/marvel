@@ -1,0 +1,18 @@
+[33m0ca5878[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m запушил билд
+[33mc174df6[m пушу билд
+[33m8de6428[m Added focusOnItem and setRef methods to change the style of the selected character card
+[33mda764ea[m Added the setCharId() method, added the charId state, and implemented changing the style of the selected character card by its id
+[33md5ea2f5[m fixed errors
+[33m67e6e87[m Added prop-types library
+[33md9ae4ac[m Fixed additional loading of characters in CharList
+[33m2816018[m - ErrorBoundary.js: Initial implementation of the ErrorBoundary component to catch JavaScript errors anywhere in their child component tree, log those errors, and display a fallback UI instead of the component tree that crashed. - App.js:  Ensured proper nesting of ErrorBoundary components around RandomChar, CharList, and CharInfo.
+[33m5449d48[m Rewrote the code to be compatible with React 18
+[33m099db40[m Implemented dynamic comic list rendering based on character data
+[33mbfacc8b[m Create a CharList class displaying 9 characters per page
+[33mcd28b53[m Implemented onCharReload method and configured thumbnail display
+[33m5ad52de[m Create an ErrorMessage component
+[33m1775fae[m feat(character): update character description. Updated the character description in _transformCharacter. Now the character description is taken from the description field of the char object.
+[33me031633[m Studied the topic "Data Transformation"
+[33m326b174[m добавить сервис marvelService
+[33m5f4ca7d[m Add initial README.md with project description and setup instructions
+[33mfa29f96[m Создал начальную структуру проекта

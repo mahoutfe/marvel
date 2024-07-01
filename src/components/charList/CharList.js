@@ -71,12 +71,12 @@ const CharList = (props) => {
 					ref={(el) => (itemRefs.current[i] = el)}
 					key={item.id}
 					onClick={() => {
-						props.onCharSelected(item.id);
+						props.onCardSelected(item.id);
 						focusOnItem(i);
 					}}
 					onKeyPress={(e) => {
 						if (e.key === ' ' || e.key === 'Enter') {
-							props.onCharSelected(item.id);
+							props.onCardSelected(item.id);
 							focusOnItem(i);
 						}
 					}}

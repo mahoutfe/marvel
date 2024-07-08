@@ -1,10 +1,10 @@
-import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton';
+import Spinner from '../spinner/Spinner';
 
 import './charInfo.scss';
 
@@ -78,21 +78,20 @@ const View = ({ char }) => {
 			<ul className='char__comics-list'>
 				{comics.length > 0 ? null : 'There is no comics with this character'}
 				{comics.map((item, i) => {
-					// eslint-disable-next-line
 					if (i > 9) return;
 					return (
-						<li key={i} className='char__comics-item'>
-							{item.name}
-						</li>
+						<Link
+							key={i}
+							to={`/comics/${item.resourceURI.match(/\/(\d+)$/)[1]}`}
+							className='char__comics-item'
+						>
+							<li>{item.name}</li>
+						</Link>
 					);
 				})}
 			</ul>
 		</>
 	);
-};
-
-CharInfo.propTypes = {
-	charId: PropTypes.number,
 };
 
 export default CharInfo;

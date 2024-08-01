@@ -1,66 +1,9 @@
 import { useFormik } from 'formik';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import useMarvelService from '../../services/MarvelService';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
 import './CharSearchForm.scss';
-
-const CharSearch = (props) => {
-	const [char, setChar] = useState(null);
-
-	const { loading, error, getCharacterByName, clearError } = useMarvelService();
-
-	useEffect(() => {
-		updateChar();
-	}, [props.charName]);
-
-	const updateChar = () => {
-		const { charName } = props;
-		if (!charName) {
-			return;
-		}
-
-		clearError();
-		getCharacterByName(charName).then(onCharSubmit);
-	};
-
-	const onCharSubmit = (char) => {
-		setChar(char);
-	};
-
-	const errorMessage = char.data.results[0] ? (
-		<div className='error'>
-			The character was not found. Check the name and try again
-		</div>
-	) : null;
-
-	const content = !(loading || char.data.results.length || !char) ? (
-		<View char={char} />
-	) : null;
-
-	return (
-		<div className='searсh__basics'>
-			{errorMessage}
-			{content}
-		</div>
-	);
-};
-
-const View = ({ char }) => {
-	const { homepage, name } = char;
-
-	return (
-		<>
-			<div className='searсh__basics'>
-				<div className='result'>There is! Visit ${name} page?</div>
-				<div className='searсh__btns'>
-					<a href={homepage} className='button button__main'>
-						<div className='inner'>TO PAGE</div>
-					</a>
-				</div>
-			</div>
-		</>
-	);
-};
 
 const validate = (values) => {
 	const errors = {};
@@ -72,14 +15,50 @@ const validate = (values) => {
 	return errors;
 };
 
+const View = ({ char }) => {
+	const { homepage, name } = char;
+
+	return (
+		<>
+			<div className='searсh__basics'>
+				<div className='result'>There is! Visit {name} page?</div>
+				<div className='searсh__btns'>
+					<a href={homepage} className='button button__main'>
+						<div className='inner'>TO PAGE</div>
+					</a>
+				</div>
+			</div>
+		</>
+	);
+};
+
 const CharSearchForm = () => {
+	const [char, setChar] = useState(null);
+
+	const { loading, error, getCharacterByName, clearError } = useMarvelService();
+
 	const formik = useFormik({
 		initialValues: {
 			name: '',
 		},
 		validate,
-		onSubmit: (values) => как-то передать имя в виде пропсов,
+		onSubmit: (values) => {
+			const { name } = values;
+			clearError();
+			getCharacterByName(name).then(onCharSubmit);
+		},
 	});
+
+	const onCharSubmit = (char) => {
+		setChar(char);
+	};
+
+	const errorMessage = error ? (
+		<div className='error'>
+			The character was not found. Check the name and try again
+		</div>
+	) : null;
+	const content = !(loading || error || !char) ? <View char={char} /> : null;
 
 	return (
 		<form onSubmit={formik.handleSubmit} className='searсh__form'>
@@ -97,16 +76,18 @@ const CharSearchForm = () => {
 					onChange={formik.handleChange}
 					onBlur={formik.handleBlur}
 				/>
-				<div className='searсh__btns'>
-					<button type='submit' className='button button__main'>
-						<div className='inner'>FIND</div>
-					</button>
-				</div>
+
+				<button type='submit' className='button button__main'>
+					<div className='inner'>FIND</div>
+				</button>
 			</div>
 			{formik.errors.name && formik.touched.name ? (
 				<div className='error'>{formik.errors.name}</div>
 			) : null}
-			<CharSearch />
+			<div className='searсh__basics'>
+				{errorMessage}
+				{content}
+			</div>
 		</form>
 	);
 };

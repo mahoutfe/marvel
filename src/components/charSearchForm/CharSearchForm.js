@@ -1,7 +1,7 @@
 import { useFormik } from 'formik';
 import { useState } from 'react';
 import useMarvelService from '../../services/MarvelService';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import Spinner from '../spinner/Spinner';
 
 import './CharSearchForm.scss';
 
@@ -16,9 +16,15 @@ const validate = (values) => {
 };
 
 const View = ({ char }) => {
-	const { homepage, name } = char;
+	const { homepage, name, notFound } = char;
 
-	return (
+	return notFound ? (
+		<>
+			<div className='error'>
+				The character was not found. Check the name and try again
+			</div>
+		</>
+	) : (
 		<>
 			<div className='searсh__basics'>
 				<div className='result'>There is! Visit {name} page?</div>
@@ -35,30 +41,28 @@ const View = ({ char }) => {
 const CharSearchForm = () => {
 	const [char, setChar] = useState(null);
 
-	const { loading, error, getCharacterByName, clearError } = useMarvelService();
+	const { loading, getCharacterByName } = useMarvelService();
 
 	const formik = useFormik({
 		initialValues: {
 			name: '',
 		},
 		validate,
-		onSubmit: (values) => {
+		onSubmit: (values, { setSubmitting }) => {
 			const { name } = values;
-			clearError();
-			getCharacterByName(name).then(onCharSubmit);
+			setSubmitting(true);
+			getCharacterByName(name).then((char) => {
+				onCharSubmit(char);
+				setSubmitting(false);
+			});
 		},
 	});
 
 	const onCharSubmit = (char) => {
 		setChar(char);
 	};
-
-	const errorMessage = error ? (
-		<div className='error'>
-			The character was not found. Check the name and try again
-		</div>
-	) : null;
-	const content = !(loading || error || !char) ? <View char={char} /> : null;
+	const spinner = loading ? <Spinner /> : null;
+	const content = !(loading || !char) ? <View char={char} /> : null;
 
 	return (
 		<form onSubmit={formik.handleSubmit} className='searсh__form'>
@@ -73,11 +77,20 @@ const CharSearchForm = () => {
 					placeholder='Enter name'
 					className='searсh__input'
 					value={formik.values.name}
-					onChange={formik.handleChange}
+					onChange={(event) => {
+						formik.handleChange(event);
+						if (event.target.value === '') {
+							setChar(null);
+						}
+					}}
 					onBlur={formik.handleBlur}
 				/>
 
-				<button type='submit' className='button button__main'>
+				<button
+					type='submit'
+					disabled={formik.isSubmitting}
+					className='button button__main'
+				>
 					<div className='inner'>FIND</div>
 				</button>
 			</div>
@@ -85,8 +98,8 @@ const CharSearchForm = () => {
 				<div className='error'>{formik.errors.name}</div>
 			) : null}
 			<div className='searсh__basics'>
-				{errorMessage}
 				{content}
+				{spinner}
 			</div>
 		</form>
 	);

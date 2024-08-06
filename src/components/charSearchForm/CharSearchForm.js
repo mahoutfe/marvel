@@ -1,5 +1,6 @@
 import { useFormik } from 'formik';
 import { useState } from 'react';
+import { Link } from 'react-router-dom';
 import useMarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 
@@ -16,7 +17,7 @@ const validate = (values) => {
 };
 
 const View = ({ char }) => {
-	const { homepage, name, notFound } = char;
+	const { name, notFound } = char;
 
 	return notFound ? (
 		<>
@@ -29,9 +30,9 @@ const View = ({ char }) => {
 			<div className='searсh__basics'>
 				<div className='result'>There is! Visit {name} page?</div>
 				<div className='searсh__btns'>
-					<a href={homepage} className='button button__main'>
+					<Link to={`/character/${name}`} className='button button__main'>
 						<div className='inner'>TO PAGE</div>
-					</a>
+					</Link>
 				</div>
 			</div>
 		</>

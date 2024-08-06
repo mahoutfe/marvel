@@ -23,7 +23,7 @@ const useMarvelService = () => {
 		const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
 		return res.data.results[0]
 			? _transformCharacter(res.data.results[0])
-			: { homepage: '', name: 'name', notFound: true };
+			: { name: 'name', notFound: true };
 	};
 
 	const getAllComics = async (offset = 0) => {

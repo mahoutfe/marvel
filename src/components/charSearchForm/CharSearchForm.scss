@@ -13,11 +13,12 @@
 		display: flex;
 	}
 	&__btns {
+		float: right;
 		margin-top: 10px;
+
 		a:nth-child(2) {
 			margin-top: 10px;
 		}
-		margin-left: auto;
 	}
 
 	&__label {
@@ -44,6 +45,11 @@
 	margin-top: 8px;
 }
 .result {
+	width: 100%;
+	padding: 0px 10px;
+	line-height: 25px;
+	margin-top: 10px;
+	flex-grow: 1;
+	margin-right: 35px;
 	color: #33c157;
-	margin-top: 8px;
 }

@@ -4,7 +4,7 @@ import useMarvelService from '../../services/MarvelService';
 import AppBanner from '../appBanner/AppBanner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Spinner from '../spinner/Spinner';
-import './singleComicPage.scss';
+import './singleItemPage.scss';
 
 const SingleCharPage = () => {
 	const { charName } = useParams();
@@ -35,11 +35,11 @@ const SingleCharPage = () => {
 const View = ({ char }) => {
 	const { name, description, thumbnail } = char;
 	return (
-		<div className='single-comic'>
-			<img src={thumbnail} alt={name} className='single-comic__img' />
-			<div className='single-comic__info'>
-				<h2 className='single-comic__name'>{name}</h2>
-				<p className='single-comic__descr'>{description}</p>
+		<div className='single-item'>
+			<img src={thumbnail} alt={name} className='single-item__img' />
+			<div className='single-item__info'>
+				<h2 className='single-item__name'>{name}</h2>
+				<p className='single-item__descr'>{description}</p>
 			</div>
 		</div>
 	);

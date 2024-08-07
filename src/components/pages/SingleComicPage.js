@@ -1,33 +1,39 @@
-import { useParams, Link } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import useMarvelService from '../../services/MarvelService';
 import AppBanner from '../appBanner/AppBanner';
+import ErrorMessage from '../errorMessage/ErrorMessage';
+import Spinner from '../spinner/Spinner';
 // import { Page404 } from '../pages';
-import './singleComicPage.scss';
+import './singleItemPage.scss';
 
 const SingleComicPage = () => {
-	const { comicId } = useParams();
-	const [comic, setComic] = useState(null);
-	const { loading, error, getComic, clearError } = useMarvelService();
+	const { itemValue } = useParams();
+	const [item, setItem] = useState(null);
+
+	const { loading, error, getComic, getCharacterByName, clearError } =
+		useMarvelService();
 
 	useEffect(() => {
-		updateComic();
-	}, [comicId]);
+		updateItem();
+	}, [itemValue]);
 
-	const updateComic = () => {
+	const updateItem = () => {
 		clearError();
-		getComic(comicId).then(onComicLoaded);
+		if (itemValue * 1) {
+			return getComic(itemValue).then(onItemLoaded);
+		} else {
+			return getCharacterByName(itemValue).then(onItemLoaded);
+		}
 	};
 
-	const onComicLoaded = (comic) => {
-		setComic(comic);
+	const onItemLoaded = (item) => {
+		setItem(item);
 	};
 
 	const errorMessage = error ? <ErrorMessage /> : null;
 	const spinner = loading ? <Spinner /> : null;
-	const content = !(loading || error || !comic) ? <View comic={comic} /> : null;
+	const content = !(loading || error || !item) ? <View item={item} /> : null;
 
 	return (
 		<>
@@ -39,20 +45,38 @@ const SingleComicPage = () => {
 	);
 };
 
-const View = ({ comic }) => {
-	const { title, price, description, thumbnail, pageCount, language } = comic;
+const View = ({ item }) => {
+	const { name, title, price, description, thumbnail, pageCount, language } =
+		item;
+
+	const thumb = name ? (
+		<img src={thumbnail} alt={name} className='single-item__img' />
+	) : (
+		<img src={thumbnail} alt={title} className='single-item__img' />
+	);
+	const label = name ? (
+		<h2 className='single-item__name'>{name}</h2>
+	) : (
+		<h2 className='single-item__name'>{title}</h2>
+	);
+
+	const comicInfo = title ? (
+		<>
+			<p className='single-item__descr'>{pageCount}</p>
+			<p className='single-item__descr'>language: {language}</p>
+			<div className='single-item__price'>{price}</div>
+		</>
+	) : null;
 
 	return (
-		<div className='single-comic'>
-			<img src={thumbnail} alt={title} className='single-comic__img' />
-			<div className='single-comic__info'>
-				<h2 className='single-comic__name'>{title}</h2>
-				<p className='single-comic__descr'>{description}</p>
-				<p className='single-comic__descr'>{pageCount}</p>
-				<p className='single-comic__descr'>language: {language}</p>
-				<div className='single-comic__price'>{price}</div>
+		<div className='single-item'>
+			{thumb}
+			<div className='single-item__info'>
+				{label}
+				<p className='single-item__descr'>{description}</p>
+				{comicInfo}
 			</div>
-			<Link to='/comics' className='single-comic__back'>
+			<Link to='/comics' className='single-item__back'>
 				Back to all
 			</Link>
 		</div>

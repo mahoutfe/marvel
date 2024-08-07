@@ -30,7 +30,7 @@ const View = ({ char }) => {
 			<div className='searсh__basics'>
 				<div className='result'>There is! Visit {name} page?</div>
 				<div className='searсh__btns'>
-					<Link to={`/character/${name}`} className='button button__main'>
+					<Link to={`/character/${name}`} className='button button__secondary'>
 						<div className='inner'>TO PAGE</div>
 					</Link>
 				</div>

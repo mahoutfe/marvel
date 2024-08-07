@@ -7,7 +7,7 @@ import Spinner from '../spinner/Spinner';
 // import { Page404 } from '../pages';
 import './singleItemPage.scss';
 
-const SingleComicPage = () => {
+const SingleItemPage = () => {
 	const { itemValue } = useParams();
 	const [item, setItem] = useState(null);
 
@@ -68,6 +68,16 @@ const View = ({ item }) => {
 		</>
 	) : null;
 
+	const backButton = title ? (
+		<Link to='/comics' className='single-item__back'>
+			Back to all
+		</Link>
+	) : (
+		<Link to='/' className='single-item__back'>
+			Back to Main page
+		</Link>
+	);
+
 	return (
 		<div className='single-item'>
 			{thumb}
@@ -76,11 +86,9 @@ const View = ({ item }) => {
 				<p className='single-item__descr'>{description}</p>
 				{comicInfo}
 			</div>
-			<Link to='/comics' className='single-item__back'>
-				Back to all
-			</Link>
+			{backButton}
 		</div>
 	);
 };
 
-export default SingleComicPage;
+export default SingleItemPage;

@@ -1,6 +1,9 @@
-import Page404 from './404';
-import ComicsPage from './ComicsPage';
 import MainPage from './MainPage';
-import SingleItemPage from './SingleItemPage';
+import ComicsPage from './ComicsPage';
+import Page404 from './404';
+import SinglePage from './SinglePage';
 
-export { ComicsPage, MainPage, Page404, SingleItemPage };
+export { MainPage, ComicsPage, Page404, SinglePage };
+
+// чтобы обратиться потом какой либо из страниц, можно написатьб например
+// import Page404 from '../pages';

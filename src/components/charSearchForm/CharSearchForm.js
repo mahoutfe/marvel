@@ -1,108 +1,101 @@
-import { useFormik } from 'formik';
 import { useState } from 'react';
+import {
+	Formik,
+	Form,
+	Field,
+	ErrorMessage as FormikErrorMessage,
+} from 'formik';
+import * as Yup from 'yup';
 import { Link } from 'react-router-dom';
+
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
+import ErrorMessage from '../errorMessage/ErrorMessage';
 
-import './CharSearchForm.scss';
-
-const validate = (values) => {
-	const errors = {};
-
-	if (!values.name) {
-		errors.name = 'This field is required';
-	}
-
-	return errors;
-};
-
-const View = ({ char }) => {
-	const { name, notFound } = char;
-
-	return notFound ? (
-		<>
-			<div className='error'>
-				The character was not found. Check the name and try again
-			</div>
-		</>
-	) : (
-		<>
-			<div className='searсh__basics'>
-				<div className='result'>There is! Visit {name} page?</div>
-				<div className='searсh__btns'>
-					<Link to={`/character/${name}`} className='button button__secondary'>
-						<div className='inner'>TO PAGE</div>
-					</Link>
-				</div>
-			</div>
-		</>
-	);
-};
+import './charSearchForm.scss';
 
 const CharSearchForm = () => {
 	const [char, setChar] = useState(null);
+	const { getCharacterByName, clearError, process, setProcess } =
+		useMarvelService();
 
-	const { loading, getCharacterByName } = useMarvelService();
-
-	const formik = useFormik({
-		initialValues: {
-			name: '',
-		},
-		validate,
-		onSubmit: (values, { setSubmitting }) => {
-			const { name } = values;
-			setSubmitting(true);
-			getCharacterByName(name).then((char) => {
-				onCharSubmit(char);
-				setSubmitting(false);
-			});
-		},
-	});
-
-	const onCharSubmit = (char) => {
+	const onCharLoaded = (char) => {
 		setChar(char);
 	};
-	const spinner = loading ? <Spinner /> : null;
-	const content = !(loading || !char) ? <View char={char} /> : null;
+
+	const updateChar = (name) => {
+		clearError();
+
+		getCharacterByName(name)
+			.then(onCharLoaded)
+			.then(() => setProcess('confirmed'));
+	};
+
+	const errorMessage =
+		process === 'error' ? (
+			<div className='char__search-critical-error'>
+				<ErrorMessage />
+			</div>
+		) : null;
+	const results = !char ? null : char.length > 0 ? (
+		<div className='char__search-wrapper'>
+			<div className='char__search-success'>
+				There is! Visit {char[0].name} page?
+			</div>
+			<Link
+				to={`/characters/${char[0].id}`}
+				className='button button__secondary'
+			>
+				<div className='inner'>To page</div>
+			</Link>
+		</div>
+	) : (
+		<div className='char__search-error'>
+			The character was not found. Check the name and try again
+		</div>
+	);
 
 	return (
-		<form onSubmit={formik.handleSubmit} className='searсh__form'>
-			<label htmlFor='name' className='searсh__label'>
-				Or find a character by name:
-			</label>
-			<div className='searсh__basics'>
-				<input
-					id='name'
-					name='name'
-					type='text'
-					placeholder='Enter name'
-					className='searсh__input'
-					value={formik.values.name}
-					onChange={(event) => {
-						formik.handleChange(event);
-						if (event.target.value === '') {
-							setChar(null);
-						}
-					}}
-					onBlur={formik.handleBlur}
-				/>
-
-				<button
-					type='submit'
-					disabled={formik.isSubmitting}
-					className='button button__main'
-				>
-					<div className='inner'>FIND</div>
-				</button>
-			</div>
-			{formik.errors.name && formik.touched.name ? (
-				<div className='error'>{formik.errors.name}</div>
-			) : null}
-			<div className='searсh__basics'>
-				{content}
-				{spinner}
-			</div>
-		</form>
+		<div className='char__search-form'>
+			<Formik
+				initialValues={{
+					charName: '',
+				}}
+				validationSchema={Yup.object({
+					charName: Yup.string().required('This field is required'),
+				})}
+				onSubmit={({ charName }) => {
+					updateChar(charName);
+				}}
+			>
+				<Form>
+					<label className='char__search-label' htmlFor='charName'>
+						Or find a character by name:
+					</label>
+					<div className='char__search-wrapper'>
+						<Field
+							id='charName'
+							name='charName'
+							type='text'
+							placeholder='Enter name'
+						/>
+						<button
+							type='submit'
+							className='button button__main'
+							disabled={process === 'loading'}
+						>
+							<div className='inner'>find</div>
+						</button>
+					</div>
+					<FormikErrorMessage
+						component='div'
+						className='char__search-error'
+						name='charName'
+					/>
+				</Form>
+			</Formik>
+			{results}
+			{errorMessage}
+		</div>
 	);
 };
 

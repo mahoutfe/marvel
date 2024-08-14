@@ -1,7 +1,8 @@
 import { useHttp } from '../hooks/http.hook';
 
 const useMarvelService = () => {
-	const { loading, request, error, clearError } = useHttp();
+	const { loading, request, error, clearError, process, setProcess } =
+		useHttp();
 
 	const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
 	const _apiKey = 'apikey=21bb54df252be81b535fe0395b0decff';
@@ -14,16 +15,24 @@ const useMarvelService = () => {
 		return res.data.results.map(_transformCharacter);
 	};
 
-	const getCharacter = async (id) => {
-		const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
-		return _transformCharacter(res.data.results[0]);
-	};
+	// Вариант модификации готового метода для поиска по имени.
+	// Вызывать его можно вот так: getAllCharacters(null, name)
+
+	// const getAllCharacters = async (offset = _baseOffset, name = '') => {
+	//     const res = await request(`${_apiBase}characters?limit=9&offset=${offset}${name ? `&name=${name}` : '' }&${_apiKey}`);
+	//     return res.data.results.map(_transformCharacter);
+	// }
+
+	// Или можно создать отдельный метод для поиска по имени
 
 	const getCharacterByName = async (name) => {
 		const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
-		return res.data.results[0]
-			? _transformCharacter(res.data.results[0])
-			: { name: 'name', notFound: true };
+		return res.data.results.map(_transformCharacter);
+	};
+
+	const getCharacter = async (id) => {
+		const res = await request(`${_apiBase}characters/${id}?${_apiKey}`);
+		return _transformCharacter(res.data.results[0]);
 	};
 
 	const getAllComics = async (offset = 0) => {
@@ -62,7 +71,6 @@ const useMarvelService = () => {
 				: 'No information about the number of pages',
 			thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
 			language: comics.textObjects[0]?.language || 'en-us',
-			// optional chaining operator
 			price: comics.prices[0].price
 				? `${comics.prices[0].price}$`
 				: 'not available',
@@ -73,11 +81,13 @@ const useMarvelService = () => {
 		loading,
 		error,
 		clearError,
+		process,
+		setProcess,
 		getAllCharacters,
+		getCharacterByName,
 		getCharacter,
 		getAllComics,
 		getComic,
-		getCharacterByName,
 	};
 };
 

@@ -2,13 +2,22 @@
 	"name": "marvel",
 	"version": "0.1.0",
 	"private": true,
-	"homepage": "https://mahoutfe.github.io/marvel",
-	"denppendencies": {
-		"@testing-library/react": "^11.2.7"
+	"dependencies": {
+		"@testing-library/jest-dom": "^5.17.0",
+		"@testing-library/react": "^11.2.7",
+		"@testing-library/user-event": "^12.8.3",
+		"formik": "^2.2.9",
+		"prop-types": "^15.7.2",
+		"react": "^18.3.1",
+		"react-dom": "^18.3.1",
+		"react-helmet": "^6.1.0",
+		"react-router-dom": "^5.3.0",
+		"react-scripts": "^5.0.1",
+		"react-transition-group": "^4.4.2",
+		"web-vitals": "^4.0.0",
+		"yup": "^0.32.9"
 	},
 	"scripts": {
-		"predeploy": "npm run build",
-		"deploy": "gh-pages -d build",
 		"start": "react-scripts start",
 		"build": "react-scripts build",
 		"test": "react-scripts test",
@@ -33,19 +42,6 @@
 		]
 	},
 	"devDependencies": {
-		"@testing-library/jest-dom": "^6.4.5",
-		"@testing-library/user-event": "^14.5.2",
-		"react": "^18.3.1",
-		"react-dom": "^18.3.1",
-		"react-scripts": "^5.0.1",
-		"sass": "^1.77.2",
-		"web-vitals": "^4.0.0"
-	},
-	"dependencies": {
-		"formik": "^2.4.6",
-		"gh-pages": "^6.1.1",
-		"prop-types": "^15.8.1",
-		"react-router-dom": "^6.24.0",
-		"react-transition-group": "^4.4.5"
+		"sass": "^1.77.2"
 	}
 }
